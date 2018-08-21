@@ -1,0 +1,277 @@
+/*** Create volatile table to store the distinct snap month year and payment year number from LZ table******/
+CREATE MULTISET VOLATILE TABLE VT_MRDM_MDCD_MBR_HCC_GAP
+     (
+      SNAP_YEAR_MNTH_NBR INTEGER NOT NULL,
+      PAYMNT_YEAR_NBR INTEGER NOT NULL,
+      LOAD_LOG_KEY BIGINT NOT NULL
+      )
+PRIMARY INDEX (SNAP_YEAR_MNTH_NBR ,PAYMNT_YEAR_NBR)
+ON COMMIT PRESERVE ROWS
+;
+
+/* **************** Error Handling ********************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* **************** Error Handling ********************************/
+
+INSERT INTO VT_MRDM_MDCD_MBR_HCC_GAP
+(
+SNAP_YEAR_MNTH_NBR,
+PAYMNT_YEAR_NBR,
+LOAD_LOG_KEY
+)
+SELECT
+DISTINCT
+LZ.SNAP_YEAR_MNTH_NBR,
+LZ.PAYMNT_YEAR_NBR,
+LD_LOG.LOAD_LOG_KEY
+FROM $ETL_VIEWS_DB.LZ_MRDM_MDCD_MBR_HCC_GAP LZ
+CROSS JOIN $ETL_VIEWS_DB.MRDM_LOAD_LOG LD_LOG	
+WHERE  LD_LOG.SUBJ_AREA_NM = '$SUBJ_AREA_NM'
+AND    LD_LOG.PBLSH_IND= 'N'
+AND    LD_LOG.LOAD_STRT_DTM = ( SELECT MAX(LOAD_STRT_DTM) LOAD_STRT_DTM 
+		                FROM $ETL_VIEWS_DB.MRDM_LOAD_LOG
+	                        WHERE SUBJ_AREA_NM = '$SUBJ_AREA_NM' 
+				AND LOAD_END_DTM='$HIGH_DTM'
+				AND PBLSH_DTM='$HIGH_DTM' 
+				AND PBLSH_IND= 'N');
+/* **************** Error Handling ********************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* **************** Error Handling ********************************/
+COLLECT STATISTICS COLUMN(SNAP_YEAR_MNTH_NBR) ON VT_MRDM_MDCD_MBR_HCC_GAP; 
+
+/* **************** Error Handling ********************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* **************** Error Handling ********************************/
+COLLECT STATISTICS COLUMN(PAYMNT_YEAR_NBR) ON VT_MRDM_MDCD_MBR_HCC_GAP;
+
+/* **************** Error Handling ********************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* **************** Error Handling ********************************/
+
+/***********************************************************************************************************/
+/*   Update RCRD_STTS_CD as 'DEL' for existing records in MRDM_MDCD_MBR_HCC_GAP    */
+/***********************************************************************************************************/
+
+UPDATE TGT
+FROM
+$ETL_VIEWS_DB.MRDM_MDCD_MBR_HCC_GAP TGT , VT_MRDM_MDCD_MBR_HCC_GAP LZ
+SET RCRD_STTS_CD='DEL'
+,UPDTD_LOAD_LOG_KEY= LZ.LOAD_LOG_KEY
+WHERE
+LZ.SNAP_YEAR_MNTH_NBR=TGT.SNAP_YEAR_MNTH_NBR
+AND
+LZ.PAYMNT_YEAR_NBR=TGT.PAYMNT_YEAR_NBR
+AND
+TGT.RCRD_STTS_CD='ACT'
+;
+
+
+/* **************** Error Handling ********************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* **************** Error Handling ********************************/
+
+/***********************************************************************************************************/
+/*   Insert the records into MRDM_MDCD_MBR_HCC_GAP from Landing Zone table LZ_MRDM_MDCD_MBR_HCC_GAP    */
+/***********************************************************************************************************/
+
+INSERT INTO MRDM_MDCD_MBR_HCC_GAP
+(
+MCID,
+SNAP_YEAR_MNTH_NBR,
+PAYMNT_YEAR_NBR,
+RISK_SCOR_SRC_TYPE_CD,
+HCC_CD,
+HCC_COFCNT_RISK_FCTR_RT,
+MBR_HCC_COFCNT_RISK_FCTR_GAP_RT,
+HCC_STTS_CD,
+MOST_RCNT_DOS_DT,
+HCC_DESC,
+HCC_RSN_DESC,
+MBR_PRTY_TO_ADRS_GAPS_IND_CD,
+DIAG_CD,
+DIAG_ICD_VRSN_CD,
+CY_ANL_VST_IND_CD,
+LAST_ANL_VST_DT,
+FRST_IDFCTN_DT,
+FILE_NM,
+SCRTY_LVL_CD,
+LOAD_LOG_KEY,
+SOR_DTM,
+CRCTD_LOAD_LOG_KEY,
+UPDTD_LOAD_LOG_KEY,
+RCRD_STTS_CD
+)
+SELECT
+LZ.MCID,
+LZ.SNAP_YEAR_MNTH_NBR,
+LZ.PAYMNT_YEAR_NBR,
+LZ.RISK_SCOR_SRC_TYPE_CD,
+LZ.HCC_CD,
+LZ.HCC_COFCNT_RISK_FCTR_RT,
+LZ.MBR_HCC_COFCNT_RISK_FCTR_GAP_RT,
+LZ.HCC_STTS_CD,
+CAST(CAST(LZ.MOST_RCNT_DOS_DT_TXT AS DATE FORMAT 'MM/DD/YYYY') AS DATE FORMAT 'YYYY-MM-DD') AS MOST_RCNT_DOS_DT,
+LZ.HCC_DESC,
+LZ.HCC_RSN_DESC,
+LZ.MBR_PRTY_TO_ADRS_GAPS_IND_CD,
+LZ.DIAG_CD,
+LZ.DIAG_ICD_VRSN_CD,
+LZ.CY_ANL_VST_IND_CD,
+CAST(CAST(LZ.LAST_ANL_VST_DT_TXT AS DATE FORMAT 'MM/DD/YYYY') AS DATE FORMAT 'YYYY-MM-DD') AS LAST_ANL_VST_DT,
+CAST(CAST(LZ.FRST_IDFCTN_DT_TXT AS DATE FORMAT 'MM/DD/YYYY') AS DATE FORMAT 'YYYY-MM-DD') AS FRST_IDFCTN_DT,
+LZ.FILE_NM,
+'UNK' AS SCRTY_LVL_CD,
+LD_LOG.LOAD_LOG_KEY,
+CURRENT_TIMESTAMP AS SOR_DTM,
+0 AS CRCTD_LOAD_LOG_KEY,
+LD_LOG.LOAD_LOG_KEY AS UPDTD_LOAD_LOG_KEY,
+'ACT' AS RCRD_STTS_CD
+FROM $ETL_VIEWS_DB.LZ_MRDM_MDCD_MBR_HCC_GAP LZ
+
+CROSS JOIN $ETL_VIEWS_DB.MRDM_LOAD_LOG LD_LOG 	
+WHERE  LD_LOG.SUBJ_AREA_NM = '$SUBJ_AREA_NM'
+AND    LD_LOG.PBLSH_IND= 'N'
+AND    LD_LOG.LOAD_STRT_DTM = ( SELECT MAX(LOAD_STRT_DTM) LOAD_STRT_DTM 
+		                FROM $ETL_VIEWS_DB.MRDM_LOAD_LOG
+	                        WHERE SUBJ_AREA_NM = '$SUBJ_AREA_NM' 
+				AND LOAD_END_DTM='$HIGH_DTM'
+				AND PBLSH_DTM='$HIGH_DTM' 
+				AND PBLSH_IND= 'N');
+
+
+/* ****************************** Error Handling ***********************************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* ****************************** Error Handling ***********************************************/
+
+CALL $DB_RFRSH_STAT_PROC.REFRESH_STTSTCS_TBL('$ETL_DATA_DB','MRDM_MDCD_MBR_HCC_GAP','N',RTRN_CD,RTRN_CNT,MSG);
+
+/* ****************************** Error Handling ***********************************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* ****************************** Error Handling ***********************************************/
+INSERT INTO RZ_AUDT_STTSTC
+(
+        AUDT_RULE_ID,
+        EVNT_DTM,
+        PRD_STRT_DT,
+        PRD_END_DT,
+        FILE_NM,
+        SESN_NM,
+        MAPG_NM,
+        RCRD_CNT,
+        CLMN_TOTL_AMT,
+        TBL_TOTL_AMT,
+        LOAD_LOG_KEY,
+        LOAD_PRCS_CD,
+        TBL_NM
+)
+SELECT
+        BALG_RULE.AUDT_RULE_ID,
+        CURRENT_TIMESTAMP,
+        CURRENT_DATE,
+        CURRENT_DATE,
+        'N/A',
+        'N/A',
+        'N/A',
+        SRC_CNT.CNT AS RCRD_CNT,
+        0,
+        0,
+        LOAD_LOG.LOAD_LOG_KEY,
+        'LZ' AS  LOAD_PRCS_CD,
+        'MRDM_MDCD_MBR_HCC_GAP' AS TBL_NM
+FROM
+/* *************************************************************************************************
+Taking the audit rule id from audit balance rule table
+************************************************************************************************* */
+(
+        SELECT
+                AUDT_RULE_ID
+        FROM
+                AUDT_BLNCG_RULE
+        WHERE
+                TBL_NM = 'MRDM_MDCD_MBR_HCC_GAP'
+                AND
+                CLMN_NM = 'N/A'
+                AND
+                SOR_CD='$SOR_CD'
+                AND
+                ENVRNMNT_CD = 'DM'
+) BALG_RULE,
+
+/* *************************************************************************************************
+GTT table we will have latest record for each and every day. So we need to take the distinct count
+of primary key for audit balancing for base table.
+************************************************************************************************* */
+(
+        SELECT
+                CAST (COUNT(*) AS BIGINT) CNT
+        FROM
+                $ETL_VIEWS_DB.LZ_MRDM_MDCD_MBR_HCC_GAP
+
+) SRC_CNT,
+
+
+
+/* *************************************************************************************************
+Load log key will be taken from LOAD LOG table instead of GTT TABLE
+(ASSUME THAT WE DONT HAVE ANY RECORDS IN THE GTT TABLE FOR INSERT/UPDATE OPERATION. SO WE ARE
+TAKING THE LOAD LOG KEY FROM MRDM LOAD LOG TABLE).
+************************************************************************************************* */
+(
+        SELECT
+                LOAD_LOG_KEY
+        FROM
+                MRDM_LOAD_LOG
+        WHERE
+                PBLSH_IND = 'N'
+                AND
+                LOAD_END_DTM    = '$HIGH_DTM'
+                AND
+                SUBJ_AREA_NM    = '$SUBJ_AREA_NM'
+                AND
+                WORK_FLOW_NM    = '$TGT_WORK_FLOW_NM'
+) LOAD_LOG
+;
+
+/* ************************************* Error Handling *******************************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* ************************************* Error Handling *******************************************/
+/* *************************************************************************************************
+/* ***** INSERTING RECORDS FROM RZ_AUDT_STTSTC TO AUDT_STTSTC TABLE ************ */
+/* ***************************************************************************************************/
+
+INSERT INTO AUDT_STTSTC
+(
+        AUDT_RULE_ID,
+        EVNT_DTM,
+        PRD_STRT_DT,
+        PRD_END_DT,
+        FILE_NM,
+        SESN_NM,
+        MAPG_NM,
+        RCRD_CNT,
+        CLMN_TOTL_AMT,
+        TBL_TOTL_AMT,
+        LOAD_LOG_KEY,
+        LOAD_PRCS_CD,
+        TBL_NM
+)
+SELECT
+        AUDT_RULE_ID,
+        EVNT_DTM,
+        PRD_STRT_DT,
+        PRD_END_DT,
+        FILE_NM,
+        SESN_NM,
+        MAPG_NM,
+        RCRD_CNT,
+        CLMN_TOTL_AMT,
+        TBL_TOTL_AMT,
+        LOAD_LOG_KEY,
+        LOAD_PRCS_CD,
+        TBL_NM
+FROM
+        RZ_AUDT_STTSTC;
+
+/* ************************************* Error Handling *******************************************/
+.IF ERRORCODE <> 0 THEN .GOTO ERRORS
+/* ************************************* Error Handling *******************************************/

@@ -1,0 +1,39 @@
+.list-container{width: 98%; font-size: 13px; padding: 5px; max-height: 300px; overflow: auto;}
+.list-table{width: 100%;}
+.list-table tr:first-child th{color: blue; text-decoration: underline; padding: 10px 0px 10px 0px;}
+.item-count{display:inline; float:left;width: 10%; max-width: 10%; color: #800040; text-align: center;}
+.item-name{display:inline; float:left; width: 65%; max-width: 65%; color: #800040;}
+.item-link{display:inline; float:right; width: 10%; max-width: 10%; text-align: center;}
+.item-link a, .item-link span{color: #0080ff; text-decoration: none; cursor: pointer;}
+.item-link a:hover, .item-link span:hover{text-decoration: underline;}
+.item-link img{height: 15px;}
+
+/*file structure*/
+.file-list-container{width: 96%; font-size: 13px; padding: 10px 10px 10px 10px; min-height: 280px; height: 280px; max-height: 280px; overflow: auto; border: 1px solid #ccc;}
+table.file-list-table {border-collapse: collapse; width: 100%; font-size: 13px;}
+.file-list-table thead{pointer-events: none;}
+.file-list-table thead th{padding: 5px; text-align: left; /* background: linear-gradient(to top, #ffffff 0%, #F0F7FF 50%, #ffffff 100%); */ background-color: white;}
+.file-list-table tbody tr:hover{background-color: #8080ff !important; color: white;}
+.file-list-table tbody th, td {text-align: left; padding: 8px; height: 20px; max-height: 20px; text-overflow: ellipsis; white-space: pre-wrap; overflow: hidden;}
+/* .file-list-table tbody td:nth-child(1){width: 5%;} */
+.file-list-table tbody td:nth-child(2){width: 55%; text-overflow: ellipsis; white-space: pre-wrap; overflow: hidden;}
+.file-list-table tbody td:nth-child(3){width: 25%;}
+.file-list-table tbody td:nth-child(4){width: 15%;}
+.file-list-table tbody td:last-child{text-align: right; padding-right: 10px;}
+/* .file-list-table tbody tr:nth-child(odd) {background-color: #dae5f4;} */
+.file-link{max-width: 15px;}
+.folder-link{cursor: pointer;}
+.date-field{padding: 5px;}
+
+.directory-option{width: 100%; display: inline; float: left; margin: 0px auto; margin-bottom: 10px;}
+
+.address-bar-table{width: 100%;}
+.address-bar{font-family: arial; font-size: 12px; font-weight: bold; padding: 5px 10px 6px 10px; border: 1px solid #ccc; text-overflow: ellipsis; white-space: pre; overflow: hidden; max-width: 96%; min-width: 96%;}
+.folder{cursor: default; font-size: 13px; width: 20px;}
+.folder img{height: 25px; width: 20px; margin: 5px 10px 5px 10px;}
+
+.file{cursor: default; font-size: 15px; width: 8%;}
+.file img{height: 25px; margin: 5px 10px 5px 10px;}
+
+.button-container{text-align: right; margin: 5px; display: inline; float: right; width: 25%;}
+.button-container input[type='button']{display: inline;}
