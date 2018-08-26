@@ -3837,15 +3837,14 @@ var readyList = jQuery.Deferred();
 jQuery.fn.ready = function( fn ) {
 
 	readyList
-		//.then( fn )
+		.then( fn )
 
 		// Wrap jQuery.readyException in a function so that the lookup
 		// happens at the time of error handling instead of callback
 		// registration.
-		//.catch( function( error ) {
-			//jQuery.readyException( error );
-		//} 
-	//);
+		.catch( function( error ) {
+			jQuery.readyException( error );
+		} );
 
 	return this;
 };
