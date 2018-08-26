@@ -9,7 +9,7 @@
 <link href="${pageContext.request.contextPath}/images/legatoicon.png" rel="icon" type="image/x-icon">
 
 <script src="${pageContext.request.contextPath}/js/vendor/jquery-3.3.1.js"></script>
-<script src="${pageContext.request.contextPath}/js/vendor/sweetalert.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/vendor/sweet-alert.js"></script>
 <script src="${pageContext.request.contextPath}/js/vendor/jquery.validate.js"></script>
 <script src="${pageContext.request.contextPath}/js/custom/login.js"></script>
 

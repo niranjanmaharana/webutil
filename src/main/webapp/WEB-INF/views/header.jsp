@@ -15,7 +15,7 @@
 
 <script src="${pageContext.request.contextPath}/js/vendor/jquery-3.3.1.js"></script>
 <script src="${pageContext.request.contextPath}/js/vendor/jquery-ui.js"></script>
-<script src="${pageContext.request.contextPath}/js/vendor/sweetalert.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/vendor/sweet-alert.js"></script>
 <script src="${pageContext.request.contextPath}/js/vendor/modernizr-2.6.2.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/custom/vertical-menu.js"></script>
 <meta charset='utf-8'>
