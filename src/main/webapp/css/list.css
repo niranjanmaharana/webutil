@@ -13,15 +13,16 @@
 table.file-list-table {border-collapse: collapse; width: 100%; font-size: 13px;}
 .file-list-table thead{pointer-events: none;}
 .file-list-table thead th{padding: 5px; text-align: left; /* background: linear-gradient(to top, #ffffff 0%, #F0F7FF 50%, #ffffff 100%); */ background-color: white;}
-.file-list-table tbody tr:hover{background-color: #8080ff !important; color: white;}
+.file-list-table tbody tr:hover{background-color: #c0c0c0!important; color: white;}
 .file-list-table tbody th, td {text-align: left; padding: 8px; height: 20px; max-height: 20px; text-overflow: ellipsis; white-space: pre-wrap; overflow: hidden;}
 /* .file-list-table tbody td:nth-child(1){width: 5%;} */
 .file-list-table tbody td:nth-child(2){width: 55%; text-overflow: ellipsis; white-space: pre-wrap; overflow: hidden;}
 .file-list-table tbody td:nth-child(3){width: 25%;}
-.file-list-table tbody td:nth-child(4){width: 15%;}
-.file-list-table tbody td:last-child{text-align: right; padding-right: 10px;}
+/* .file-list-table tbody td:nth-child(4){width: 15%;} */
+.file-list-table tbody td:last-child{text-align: right; padding-right: 20px;}
 /* .file-list-table tbody tr:nth-child(odd) {background-color: #dae5f4;} */
 .file-link{max-width: 15px;}
+.file-link img{width: 20px; height: 20px;}
 .folder-link{cursor: pointer;}
 .date-field{padding: 5px;}
 

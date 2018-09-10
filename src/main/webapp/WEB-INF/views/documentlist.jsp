@@ -30,14 +30,14 @@ var rootPath = '${rootPath}';
 					<input type='hidden' id='currentPath' name='currentPath'>
 					<div class='directory-option'>
 						<button id='btnBack' class="previous" title='Go back'>&larr;</button>
+						<security:authorize access="hasRole('SUPERADMIN')">
+							<div class='button-container'>
+								<input type='button' value='New Folder' id="createnewfolder"/>
+								<input type='button' value='Upload' id="uploadnewfile"/>
+							</div>
+						</security:authorize>
 					</div>
 					<div class='address-bar' id='address-bar'></div>
-					<security:authorize access="hasRole('SUPERADMIN')">
-						<div class='button-container'>
-							<input type='button' value='New Folder' id="createnewfolder"/>
-							<input type='button' value='Upload' id="uploadnewfile"/>
-						</div>
-					</security:authorize>
 				</div>
 				<div class='file-list-container'>
 					<table class='file-list-table' id='file-list-table'>
@@ -55,3 +55,4 @@ var rootPath = '${rootPath}';
 	<jsp:include page="footer.jsp" />
 </body>
 </html>
+<jsp:include page="uploadciidoc.jsp" />

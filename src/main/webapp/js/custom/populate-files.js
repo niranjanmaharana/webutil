@@ -7,6 +7,18 @@ $(document).ready(function() {
 		backSource = backSource.substring(0, backSource.lastIndexOf("\\"));
 		loadFiles(backSource, -1);
 	});
+	
+	$("#upload-box").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 500,
+		height: 300
+	});
+	
+	$("#uploadnewfile").click(function(){
+		$("#fileLocation").val($("#address-bar").text());
+		$("#upload-box").dialog("open");
+	});
 });
 
 var loadFiles = function(rootPath, count){

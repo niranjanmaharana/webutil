@@ -74,11 +74,11 @@ public class CiiController {
 	
 	@PostMapping("/upload")
 	public ResponseEntity<Object> uploadDoc(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam("file") MultipartFile file, @RequestParam("fileType") int fileType) throws IOException{
-		LOGGER.info(file.getName());
+			@RequestParam("file") MultipartFile file, @RequestParam("filePath") String filePath) throws IOException{
 		if (!file.getOriginalFilename().isEmpty()) {
-			ciiService.uploadDoc(file, fileType);
+			ciiService.uploadDoc(file, urlCoder.decode(filePath));
 		} else {
+			LOGGER.error("File uploading has been cancelled since file name is not valid !");
 			return new ResponseEntity<>("Invalid file.", HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>("File Uploaded Successfully.", HttpStatus.OK);

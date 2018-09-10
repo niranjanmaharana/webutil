@@ -7,47 +7,31 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<jsp:include page="header.jsp" />
-<link href="${pageContext.request.contextPath}/css/bootstrap.css" rel="stylesheet">
-
 <script src="${pageContext.request.contextPath}/js/custom/upload-file.js"></script>
+<script src="${pageContext.request.contextPath}/js/vendor/jquery.validate.js"></script>
+<script src="${pageContext.request.contextPath}/js/vendor/jquery.form.js"></script>
+<script src="${pageContext.request.contextPath}/js/vendor/additional-methods.js"></script>
 </head>
 <body>
-	<div class="content">
-		<div>
-			<div class='content-left'>
-				<jsp:include page="vertical-menu.jsp"/>
+	<div id='upload-box'>
+		<form action="${pageContext.request.contextPath}/cii/upload" method="post" enctype="multipart/form-data" id='upload-form'>
+			<div class="form-group">
+				<label>File Location : <input type='text' class='read-only-field' readonly="readonly" name='fileLocation' id='fileLocation' value=''></label>
 			</div>
-			<div class='content-right'>
-				<div class='main-title'>CII Documents</div>
-				<div id='upload-box'>
-					<form action="${pageContext.request.contextPath}/cii/upload" method="post" enctype="multipart/form-data" id='upload-form'>
-						<div class="form-group">
-							<label>File Type
-								<select name='fileType'>
-									<option value='0'>Document</option>
-									<option value='1'>WebEx Recording</option>
-								</select>
-							</label>
-						</div>
-						<div class="form-group">
-							<label>Select File</label><input class="form-control" type="file" name="file">
-						</div>
-						<div class="form-group">
-							<button class="btn btn-primary" type="submit">Upload</button>
-						</div>
-					</form>
-					<!-- Bootstrap Progress bar -->
-					<div class="progress">
-						<div id="progressBar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
-					</div>
-
-					<!-- Alert -->
-					<div id="alertMsg" style="color: red; font-size: 18px;"></div>
-				</div>
+			<div class="form-group">
+				<label>Select File</label><input class="form-control" type="file" name="file" id='file'>
 			</div>
+			<div class="form-group">
+				<button class="btn btn-primary" type="submit">Upload</button>
+			</div>
+		</form>
+		<!-- Bootstrap Progress bar -->
+		<div class="progress">
+			<div id="progressBar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
 		</div>
+
+		<!-- Alert -->
+		<div id="alertMsg" style="color: red; font-size: 18px;"></div>
 	</div>
-	<jsp:include page="footer.jsp" />
 </body>
 </html>

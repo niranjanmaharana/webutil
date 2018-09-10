@@ -27,6 +27,17 @@ select:focus {
 	outline: thin dotted 9;
 }
 
+.read-only-field{border: none !important; background: none !important; color: gray !important; padding: 5px !important;}
+.read-only-field:focus {
+	border: none !important;
+	background: none !important;
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	-o-box-shadow: none !important;
+	box-shadow: none !important;
+	border-right: none !important;
+}
+
 textarea {
 	resize: none;
 	padding: 6px;
@@ -53,13 +64,16 @@ input[type=text], input[type=password] {
 	background: white;
 	padding: 7px;
 	width: 200px;
-	/* margin-bottom: 10px; */
-	/* border-radius: 4px; */
-	/* -webkit-transition: 0.5s ease-in-out all;
-	-moz-transition: 0.5s ease-in-out all;
-	-ms-transition: 0.5s ease-in-out all;
-	-o-transition: 0.5s ease-in-out all; */
-	/* transition: 0.5s ease-in-out all; */
+}
+
+input[type=text], input[type=password] {
+	font-size: 14px;
+	color: #666;
+	border: 1px solid #ccc;
+	border-right: 3px solid #ccc;
+	background: white;
+	padding: 7px;
+	width: 200px;
 }
 
 input[type=text]:focus, input[type=password]:focus {

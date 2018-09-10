@@ -39,6 +39,7 @@ public class CiiServiceImpl implements CiiService{
 	@Value("${cii.rootPath}")
 	private String rootPath;
 	
+	@Override
 	public List<Document> getDocumentList(String rootPath) throws IOException{
 		rootPath = urlCoderService.decode(rootPath);
 		File folder = new File(rootPath);
@@ -60,18 +61,20 @@ public class CiiServiceImpl implements CiiService{
 		return documents;
 	}
 	
-	public boolean uploadDoc(MultipartFile file, int fileType) throws IOException{
-		try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(new File(
-				fileType == FileType.DOCUMENTS.getId() ? "" : "", 
-						file.getOriginalFilename())))) {
+	@Override
+	public boolean uploadDoc(MultipartFile file, String filePath) throws IOException{
+		try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(new File(filePath, file.getOriginalFilename())))) {
 			outputStream.write(file.getBytes());
 			outputStream.flush();
+			LOGGER.info("File uploaded : " + filePath + File.separator + file.getOriginalFilename());
 			return true;
 		}catch(Exception exception){
+			LOGGER.error("Error occurred while uploading the document ! " + exception.getMessage());
 			return false;
 		}
 	}
 	
+	@Override
 	public void downloadCommonFile(File file, HttpServletResponse response) throws IOException{
 		if(!file.exists()){
             String errorMessage = "Sorry. The file you are looking for does not exist";
@@ -95,6 +98,7 @@ public class CiiServiceImpl implements CiiService{
         LOGGER.info(file.getAbsolutePath() + " downloaded.");
 	}
 	
+	@Override
 	public Map<String, Object> createFolder(String path, String folderName){
 		Map<String, Object> result = new LinkedHashMap<>();
 		path = urlCoderService.decode(path);
@@ -114,6 +118,7 @@ public class CiiServiceImpl implements CiiService{
 		return result;
 	}
 	
+	@Override
 	public String removefile(int fileType, String fileName){
 		File fileToRemove = new File((fileType == FileType.DOCUMENTS.getId() ? "" : "") + File.separator + fileName);
 		if(fileToRemove.exists())

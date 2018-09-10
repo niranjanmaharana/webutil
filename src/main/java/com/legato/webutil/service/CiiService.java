@@ -13,7 +13,7 @@ import com.legato.webutil.domain.documents.Document;
 
 public interface CiiService {
 	public List<Document> getDocumentList(String rootPath) throws IOException;
-	public boolean uploadDoc(MultipartFile file, int fileType) throws IOException;
+	public boolean uploadDoc(MultipartFile file, String filePath) throws IOException;
 	public void downloadCommonFile(File file, HttpServletResponse response) throws IOException;
 	public Map<String, Object> createFolder(String path, String folderName);
 	public String removefile(int fileType, String fileName);
